@@ -15,13 +15,13 @@
  */
 package com.simpletecno.recobrapp.utileria;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Resource;
 import com.vaadin.server.ThemeResource;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  *

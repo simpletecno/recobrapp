@@ -17,14 +17,21 @@ package com.simpletecno.recobrapp.utileria;
 
 import com.vaadin.server.VaadinService;
 import com.vaadin.ui.Notification;
+
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import java.io.File;
 import java.security.Security;
-import javax.mail.*;
-import javax.mail.internet.*;
-import java.util.*;
+import java.util.Date;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.activation.*;
 
 public class MyEmailMessanger {
 

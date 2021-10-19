@@ -15,9 +15,6 @@
  */
 package com.vaadin.tests.components.calendar;
 
-import java.util.Date;
-import java.util.Locale;
-
 import com.vaadin.event.Action;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Button;
@@ -27,6 +24,9 @@ import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.components.calendar.CalendarDateRange;
 import com.vaadin.ui.components.calendar.event.BasicEvent;
+
+import java.util.Date;
+import java.util.Locale;
 
 public class CalendarActionsUI extends UI {
 

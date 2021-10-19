@@ -1,9 +1,6 @@
 package com.simpletecno.recobrapp.views.finiquitos;
 
-import com.mysql.cj.QueryResult;
 import com.simpletecno.recobrapp.main.RecobrAppUI;
-import static com.simpletecno.recobrapp.views.finiquitos.ConsultarFiniquitosView.stPreparedQuery;
-
 import com.simpletecno.recobrapp.utileria.EnvironmentVars;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.StreamResource;
@@ -14,6 +11,8 @@ import com.wcs.wcslib.vaadin.widget.multifileupload.ui.UploadFinishedHandler;
 import com.wcs.wcslib.vaadin.widget.multifileupload.ui.UploadStateWindow;
 
 import java.io.*;
+
+import static com.simpletecno.recobrapp.views.finiquitos.ConsultarFiniquitosView.stPreparedQuery;
 
 public class CargarArchivoIngresoDocumentos extends Window {
 

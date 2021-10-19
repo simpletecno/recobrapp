@@ -1,20 +1,19 @@
 package com.simpletecno.recobrapp.main;
 
-import com.simpletecno.recobrapp.utileria.MyEmailMessanger;
-import com.simpletecno.recobrapp.utileria.MySessionInitListener;
-import com.simpletecno.recobrapp.administrativo.*;
+import com.simpletecno.recobrapp.administrativo.BitacoraView;
 import com.simpletecno.recobrapp.conexion.MyDatabaseProvider;
 import com.simpletecno.recobrapp.conexion.SessionInformation;
+import com.simpletecno.recobrapp.utileria.MyEmailMessanger;
+import com.simpletecno.recobrapp.utileria.MySessionInitListener;
 import com.simpletecno.recobrapp.views.error.ErrorView;
-import com.simpletecno.recobrapp.views.error.LogoView;
-import com.simpletecno.recobrapp.views.login.ChangePassword;
-import com.simpletecno.recobrapp.views.login.LoginForm;
-import com.simpletecno.recobrapp.views.reporto.ResumenReportoMetaView;
-import com.simpletecno.recobrapp.views.usuario.UsersView;
 import com.simpletecno.recobrapp.views.finiquitos.ConsultarFiniquitosView;
 import com.simpletecno.recobrapp.views.finiquitos.FiniquitosView;
 import com.simpletecno.recobrapp.views.finiquitos.ImportarView;
+import com.simpletecno.recobrapp.views.login.ChangePassword;
+import com.simpletecno.recobrapp.views.login.LoginForm;
 import com.simpletecno.recobrapp.views.reporto.ReportoMetaView;
+import com.simpletecno.recobrapp.views.reporto.ResumenReportoMetaView;
+import com.simpletecno.recobrapp.views.usuario.UsersView;
 import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
@@ -27,13 +26,11 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import org.vaadin.dialogs.ConfirmDialog;
 
-import javax.mail.MessagingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -311,11 +308,11 @@ public class RecobrAppUI extends UI implements Button.ClickListener {
 
         navigator = new Navigator(this, viewDisplay);
 
-        getNavigator().addView("importar finiquitos", ImportarView.class);
-        getNavigator().addView("consultar finiquitos", ConsultarFiniquitosView.class);
+        getNavigator().addView("finiquitosImportar", ImportarView.class);
+        getNavigator().addView("finiquitosConsultar", ConsultarFiniquitosView.class);
         getNavigator().addView("finiquitos", FiniquitosView.class);
-        getNavigator().addView("reportar recuperacion", ReportoMetaView.class);
-        getNavigator().addView("control", ResumenReportoMetaView.class);
+        getNavigator().addView("recuperaReportar", ReportoMetaView.class);
+        getNavigator().addView("recuperaResumen", ResumenReportoMetaView.class);
         getNavigator().addView("bitacora", BitacoraView.class);
         getNavigator().addView("usuarios", UsersView.class);
         //getNavigator().addView("logo", LogoView.class);
@@ -324,12 +321,13 @@ public class RecobrAppUI extends UI implements Button.ClickListener {
 
         String f = Page.getCurrent().getUriFragment();
         if (f == null || f.equals("")) {
-            if (sessionInformation.getStrUserProfileName().equals("ADMINISTRADOR")){
-                getNavigator().navigateTo("finiquitos");
-            }else{
-                getNavigator().navigateTo("consultar");
+            if (sessionInformation.getStrUserProfileName().equals("ADMINISTRADOR")) {
+                getNavigator().navigateTo("recuperaResumen");
+            } else if (sessionInformation.getStrUserProfileName().equals("SUPERVISOR")) {
+                getNavigator().navigateTo("recuperaReportar");
+            } else { //GESTORES
+                getNavigator().navigateTo("finiquitosConsultar");
             }
-
         }
 
         getNavigator().addViewChangeListener(new ViewChangeListener() {
@@ -379,20 +377,20 @@ public class RecobrAppUI extends UI implements Button.ClickListener {
 
     CssLayout buildMenu() {
         // Add items
-        menuItems.put("importar finiquitos", "Importar Finiquitos");
-        iconItems.put("importar finiquitos", FontAwesome.SORT_AMOUNT_ASC);
+        menuItems.put("finiquitosImportar", "Importar Finiquitos");
+        iconItems.put("finiquitosImportar", FontAwesome.SORT_AMOUNT_ASC);
 
-        menuItems.put("consultar finiquitos", "Consultar Finiquitos");
-        iconItems.put("consultar finiquitos", FontAwesome.SEARCH);
+        menuItems.put("finiquitosConsultar", "Consultar Finiquitos");
+        iconItems.put("finiquitosConsultar", FontAwesome.SEARCH);
 
         menuItems.put("finiquitos", "Mantenimiento Finiquitos");
         iconItems.put("finiquitos", FontAwesome.PLUS);
 
-        menuItems.put("reportar recuperacion", "Reportar Recuperación");
-        iconItems.put("reportar recuperacion", FontAwesome.CHECK);
+        menuItems.put("recuperaReportar", "Reportar Recuperación");
+        iconItems.put("recuperaReportar", FontAwesome.CHECK);
 
-        menuItems.put("control", "Resumen de Recuperación");
-        iconItems.put("control", FontAwesome.BOOK);
+        menuItems.put("recuperaResumen", "Resumen de Recuperación");
+        iconItems.put("recuperaResumen", FontAwesome.BOOK);
 
         menuItems.put("bitacora", "Bitacora");
         iconItems.put("bitacora", FontAwesome.BINOCULARS);
@@ -478,7 +476,8 @@ public class RecobrAppUI extends UI implements Button.ClickListener {
         Label label = null;
         int count = -1;
         for (final Map.Entry<String, String> item : menuItems.entrySet()) {
-            if (item.getKey().equals("importar finiquitos")) {
+System.out.println(item.getKey());
+            if (item.getKey().equals("finiquitosImportar")) {
                 label = new Label("Finiquitos", ContentMode.HTML);
                 label.setPrimaryStyleName(ValoTheme.MENU_SUBTITLE);
                 label.addStyleName(ValoTheme.LABEL_H4);
@@ -486,8 +485,8 @@ public class RecobrAppUI extends UI implements Button.ClickListener {
                 menuItemsLayout.addComponent(label);
             }
 
-            if (item.getKey().equals("reportar recuperacion")) {
-                label = new Label("Reporto ", ContentMode.HTML);
+            if (item.getKey().equals("recuperaReportar")) {
+                label = new Label("Reporto", ContentMode.HTML);
                 label.setPrimaryStyleName(ValoTheme.MENU_SUBTITLE);
                 label.addStyleName(ValoTheme.LABEL_H4);
                 label.setSizeUndefined();
@@ -532,10 +531,11 @@ public class RecobrAppUI extends UI implements Button.ClickListener {
         if (sessionInformation.getStrUserProfileName().equals("SUPERVISOR")) {
             return (acceso.equals("Consultar Finiquitos")
                     || acceso.equals("Mantenimiento Finiquitos")
-                    || acceso.equals("Reportar Recuperación"));
+                    || acceso.equals("Reportar Recuperación")
+                    || acceso.equals("Resumen de Recuperación"));
         }
 
-        if (sessionInformation.getStrUserProfileName().equals("BACKOFFICE")) {
+        if (sessionInformation.getStrUserProfileName().equals("GESTOR")) {
             return (acceso.equals("Consultar Finiquitos")
                     || acceso.equals("Mantenimiento Finiquitos"));
         }

@@ -74,15 +74,18 @@ public class ReportoMetaView extends VerticalLayout implements View {
     }
 
     public void llenarComentarioAdminsitrador() {
-        queryString = " select * from comentario";
-        queryString = queryString + " Order by IdComentario desc";
+        queryString = " SELECT comentario.*, usuario.Nombre ";
+        queryString += " FROM comentario";
+        queryString += " INNER JOIN usuario ON usuario.IdUsuario = comentario.CreadoUsuario";
+        queryString += " WHERE comentario.IdUsuario = " + ((RecobrAppUI)this.mainUI).sessionInformation.getStrUserId();
+        queryString += " ORDER BY comentario.IdComentario Desc";
 
         try {
             stQuery = ((RecobrAppUI)this.mainUI).databaseProvider.getCurrentConnection().createStatement();
             rsRecords = stQuery.executeQuery(queryString);
             if (rsRecords.next()) {
                 comentarioArea.setReadOnly(false);
-                comentarioArea.setValue(rsRecords.getString("Comentario"));
+                comentarioArea.setValue(rsRecords.getString("Comentario") + ".  Creado por : " + rsRecords.getString("Nombre") + ". Fecha : " + Utileria.getFechaDDMMYYYY_HHMM_2(rsRecords.getTimestamp("CreadoFechaYHora")));
                 comentarioArea.setReadOnly(true);
             } else {
                 comentarioArea.setVisible(false);
@@ -112,7 +115,7 @@ public class ReportoMetaView extends VerticalLayout implements View {
         avenceContainer.addContainerProperty(CODIGO_PROPERTY, String.class, null);
         avenceContainer.addContainerProperty(COMENTARIO_PROPERTY, String.class, null);
 
-        avenceGrid = new Grid("Bitacora de hoy " + Utileria.getFechaDDMMYYYY(new Date()), avenceContainer);
+        avenceGrid = new Grid("Bitácora de hoy " + Utileria.getFechaDDMMYYYY(new Date()), avenceContainer);
         avenceGrid.setWidth("100%");
         avenceGrid.setSelectionMode(Grid.SelectionMode.SINGLE);
         avenceGrid.setHeightMode(HeightMode.ROW);
@@ -131,17 +134,6 @@ public class ReportoMetaView extends VerticalLayout implements View {
         camposLayout.setSpacing(true);
         HorizontalLayout buttonLayout = new HorizontalLayout();
         buttonLayout.setSpacing(true);
-
-        Button salirBtn = new Button("Salir");
-        salirBtn.setStyleName("danger");
-        salirBtn.setWidth("8em");
-        salirBtn.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent clickEvent) {
-
-            }
-        });
-
 
         alMomentoTxt = new NumberField("Al momento : ");
         alMomentoTxt.setDecimalAllowed(true);
@@ -183,7 +175,7 @@ public class ReportoMetaView extends VerticalLayout implements View {
         probableTxt.addStyleName("align-right");
 
         comentarioTxt = new TextField("Comentario : ");
-        comentarioTxt.setWidth("19em");
+        comentarioTxt.setWidth("25em");
         comentarioTxt.setValue("");
 
         Button reportarBtn = new Button("Reportar");
@@ -198,8 +190,7 @@ public class ReportoMetaView extends VerticalLayout implements View {
 
         camposLayout.addComponents(alMomentoTxt, segurosTxt, probableTxt, comentarioTxt);
         
-        buttonLayout.addComponents(salirBtn, camposLayout, reportarBtn);
-        buttonLayout.setComponentAlignment(salirBtn, Alignment.BOTTOM_LEFT);
+        buttonLayout.addComponents(camposLayout, reportarBtn);
         buttonLayout.setComponentAlignment(camposLayout, Alignment.BOTTOM_LEFT);
         buttonLayout.setComponentAlignment(reportarBtn, Alignment.BOTTOM_RIGHT);
         

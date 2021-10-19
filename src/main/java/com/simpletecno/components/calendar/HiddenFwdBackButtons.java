@@ -15,9 +15,6 @@
  */
 package com.vaadin.tests.components.calendar;
 
-import java.util.Date;
-import java.util.Locale;
-
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -27,6 +24,9 @@ import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.components.calendar.CalendarComponentEvents.BackwardHandler;
 import com.vaadin.ui.components.calendar.CalendarComponentEvents.ForwardHandler;
+
+import java.util.Date;
+import java.util.Locale;
 
 public class HiddenFwdBackButtons extends UI {
 

@@ -116,20 +116,20 @@
     <env-entry>
         <env-entry-name>DB_URL</env-entry-name>
         <env-entry-type>java.lang.String</env-entry-type>
-        <env-entry-value>jdbc:mysql://localhost:3306/recobroweb</env-entry-value>
+        <env-entry-value>jdbc:mysql://localhost:3306/recobrapp?characterEncoding=utf8</env-entry-value>
         <!--<env-entry-value>jdbc:mysql://65.111.164.179:3306/sopdi</env-entry-value>-->
     </env-entry>
     <env-entry>
         <env-entry-name>DB_USERNAME</env-entry-name>
         <env-entry-type>java.lang.String</env-entry-type>
         <!--<env-entry-value>jaguirre</env-entry-value>-->
-        <env-entry-value>javier</env-entry-value>
+        <env-entry-value>root</env-entry-value>
     </env-entry>
     <env-entry>
         <env-entry-name>DB_PASSWORD</env-entry-name>
         <env-entry-type>java.lang.String</env-entry-type>
         <!--<env-entry-value>8av910lmsz21</env-entry-value>-->
-        <env-entry-value>temporal#1</env-entry-value>
+        <env-entry-value>rootroot</env-entry-value>
     </env-entry>
     <env-entry>
         <env-entry-name>DBDATASOURCE</env-entry-name>

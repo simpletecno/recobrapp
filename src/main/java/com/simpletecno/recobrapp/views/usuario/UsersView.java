@@ -15,29 +15,17 @@ import com.vaadin.server.Page;
 import com.vaadin.server.Sizeable;
 import com.vaadin.server.StreamResource;
 import com.vaadin.shared.ui.MarginInfo;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.MenuBar;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
+import org.vaadin.dialogs.ConfirmDialog;
+
+import java.io.*;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.vaadin.dialogs.ConfirmDialog;
 
 /**
  *
@@ -51,10 +39,12 @@ public class UsersView extends VerticalLayout implements View {
     public ResultSet rsRecords1 = null;
     
     protected static final String CODIGO_PROPERTY    = "Id";
-    protected static final String EMPRESA_PROPERTY   = "Empresa";
+//    protected static final String EMPRESA_PROPERTY   = "Empresa";
     protected static final String USUARIO_PROPERTY   = "Usuario";
     protected static final String NOMBRE_PROPERTY    = "Nombre";
-    protected static final String EMAIL_PROPERTY     = "eMail";
+//    protected static final String EMAIL_PROPERTY     = "eMail";
+    protected static final String EQUIPO_PROPERTY    = "Equipo";
+    protected static final String METADIARIA_PROPERTY = "Meta Diaria";
     protected static final String PERFIL_PROPERTY    = "Perfil";
     protected static final String ESTATUS_PROPERTY   = "Estatus";
     protected static final String OPTIONS_PROPERTY = "-";
@@ -162,18 +152,20 @@ public class UsersView extends VerticalLayout implements View {
         usersTable.setSelectable(true);
         
         usersTable.addContainerProperty(CODIGO_PROPERTY,    String.class, null);
-        usersTable.addContainerProperty(EMPRESA_PROPERTY,   String.class, null);
+//        usersTable.addContainerProperty(EMPRESA_PROPERTY,   String.class, null);
         usersTable.addContainerProperty(USUARIO_PROPERTY,   String.class, null);
         usersTable.addContainerProperty(NOMBRE_PROPERTY,    String.class, null);
 //        usersTable.addContainerProperty(EMAIL_PROPERTY,     String.class, null);
         usersTable.addContainerProperty(PERFIL_PROPERTY,    String.class, null);
         usersTable.addContainerProperty(ESTATUS_PROPERTY,   String.class, null);
+        usersTable.addContainerProperty(EQUIPO_PROPERTY,    String.class, null);
+        usersTable.addContainerProperty(METADIARIA_PROPERTY,    String.class, null);
         usersTable.addContainerProperty(OPTIONS_PROPERTY,   MenuBar.class, null);
 
         usersTable.setColumnAlignments(new Table.Align[] { 
                 Table.Align.CENTER, Table.Align.LEFT,  Table.Align.LEFT,
-                Table.Align.LEFT,   /*Table.Align.LEFT,*/  Table.Align.LEFT,
-                Table.Align.CENTER, Table.Align.CENTER
+                Table.Align.LEFT,   Table.Align.LEFT,  Table.Align.LEFT,
+                Table.Align.RIGHT,  Table.Align.CENTER
         });
 
         addComponent(reportLayout);        
@@ -269,11 +261,13 @@ public class UsersView extends VerticalLayout implements View {
                     
                     usersTable.addItem(new Object[] {    
                         rsRecords.getString("IdUsuario"),
-                        rsRecords.getString("EmpresaNombre"),
+//                        rsRecords.getString("EmpresaNombre"),
                         rsRecords.getString("Usuario"),
                         rsRecords.getString("Nombre"),
                         rsRecords.getString("Perfil"),
                         rsRecords.getString("Estatus"),
+                        rsRecords.getString("Equipo"),
+                        rsRecords.getString("MetaDiaria"),
                         contactMenu
                     }, rsRecords.getInt("IdUsuario"));
 

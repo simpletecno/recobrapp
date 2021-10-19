@@ -36,7 +36,7 @@ public class ResumenReportoMetaView extends VerticalLayout implements View {
 
     static final String FECHA_PROPERTY = "Fecha";
     static final String HORA_PROPERTY = "Hora";
-    static final String COMENTARIO_PROPERTY = "Porcentaje";
+    static final String COMENTARIO_PROPERTY = "Comentario";
 
     Grid bitacoraGrid;
     public IndexedContainer bitacoraContainer = new IndexedContainer();
@@ -160,13 +160,14 @@ public class ResumenReportoMetaView extends VerticalLayout implements View {
 
         resumenGrid.getColumn(ID_PROPERTY).setExpandRatio(1).setHidable(true).setHidden(true);
         resumenGrid.getColumn(ID_USUARIO_PROPERTY).setExpandRatio(1).setHidable(true).setHidden(true);
-        resumenGrid.getColumn(USUARIO_PROPERTY).setExpandRatio(1);
-        resumenGrid.getColumn(EQUIPO_PROPERTY).setExpandRatio(1);
-        resumenGrid.getColumn(META_PROPERTY).setExpandRatio(2);
-        resumenGrid.getColumn(ACUMULADO_PROPERTY).setExpandRatio(2);
-        resumenGrid.getColumn(SEGURO_PROPERTY).setExpandRatio(2);
-        resumenGrid.getColumn(PROBABLE_PROPERTY).setExpandRatio(2);
-        resumenGrid.getColumn(PORCENTAJE_PROPERTY).setExpandRatio(2);
+        resumenGrid.getColumn(USUARIO_PROPERTY).setExpandRatio(2);
+        resumenGrid.getColumn(EQUIPO_PROPERTY).setExpandRatio(2);
+        resumenGrid.getColumn(META_PROPERTY).setExpandRatio(1);
+        resumenGrid.getColumn(ACUMULADO_PROPERTY).setExpandRatio(1);
+        resumenGrid.getColumn(SEGURO_PROPERTY).setExpandRatio(1);
+        resumenGrid.getColumn(PROBABLE_PROPERTY).setExpandRatio(1);
+        resumenGrid.getColumn(PORCENTAJE_PROPERTY).setExpandRatio(1);
+        resumenGrid.setDescription("Elija un registro para visualizar la bitácora.");
 
         Grid.HeaderRow filterRow = resumenGrid.appendHeaderRow();
         Grid.HeaderCell cellF = (Grid.HeaderCell) filterRow.getCell(USUARIO_PROPERTY);
@@ -215,9 +216,9 @@ public class ResumenReportoMetaView extends VerticalLayout implements View {
         bitacoraGrid.getColumn(FECHA_PROPERTY).setExpandRatio(1);
         bitacoraGrid.getColumn(HORA_PROPERTY).setExpandRatio(1);
         bitacoraGrid.getColumn(EQUIPO_PROPERTY).setExpandRatio(2);
-        bitacoraGrid.getColumn(ACUMULADO_PROPERTY).setExpandRatio(2);
-        bitacoraGrid.getColumn(SEGURO_PROPERTY).setExpandRatio(2);
-        bitacoraGrid.getColumn(PROBABLE_PROPERTY).setExpandRatio(2);
+        bitacoraGrid.getColumn(ACUMULADO_PROPERTY).setExpandRatio(1);
+        bitacoraGrid.getColumn(SEGURO_PROPERTY).setExpandRatio(1);
+        bitacoraGrid.getColumn(PROBABLE_PROPERTY).setExpandRatio(1);
         bitacoraGrid.getColumn(COMENTARIO_PROPERTY).setExpandRatio(2);
 
         bitacoraGrid.setCellStyleGenerator((cellReference) -> {
@@ -234,12 +235,16 @@ public class ResumenReportoMetaView extends VerticalLayout implements View {
 
         HorizontalLayout comentarioLayout = new HorizontalLayout();
         comentarioLayout.setSpacing(true);
+        comentarioLayout.setWidth("100%");
+        comentarioLayout.addStyleName("rcorners3");
 
         comentarioTxt = new TextField("Comentario para supervisores");
-        comentarioTxt.setWidth("40em");
+        comentarioTxt.setWidth("80%");
+        comentarioTxt.setDescription("Escriba aqui un mensaje que quiere que le aparezca al supervisor.");
 
         guardarBtn = new Button("Enviar");
         guardarBtn.setIcon(FontAwesome.SEND);
+        guardarBtn.setWidth("20%");
         guardarBtn.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
@@ -248,7 +253,8 @@ public class ResumenReportoMetaView extends VerticalLayout implements View {
         });
 
         comentarioLayout.addComponents(comentarioTxt, guardarBtn);
-        comentarioLayout.setComponentAlignment(guardarBtn, Alignment.BOTTOM_CENTER);
+        comentarioLayout.setComponentAlignment(comentarioTxt, Alignment.BOTTOM_LEFT);
+        comentarioLayout.setComponentAlignment(guardarBtn, Alignment.BOTTOM_RIGHT);
 
         gridLayout.addComponent(resumenGrid);
         gridLayout.setComponentAlignment(resumenGrid, Alignment.TOP_CENTER);
@@ -279,7 +285,7 @@ public class ResumenReportoMetaView extends VerticalLayout implements View {
         queryString += " where DATE_FORMAT(rep.FechaYHora,'%d/%m/%Y') = '" + Utileria.getFechaDDMMYYYY((fechaDt.getValue())) + "'";
         queryString += " Group by rep.IdUsuario ";
 
-System.out.println("query de resumen grid " + queryString);
+//System.out.println("query de resumen grid " + queryString);
 
         double porcentaje = 0.00;
         double meta = 0.00;
@@ -351,7 +357,7 @@ System.out.println("query de resumen grid " + queryString);
         queryString = queryString + " where DATE_FORMAT(rep.FechaYHora,'%d/%m/%Y') = '" + Utileria.getFechaDDMMYYYY((Date) this.fechaDt.getValue()) + "'";
         queryString = queryString + " and IdUsuario = " + idUsuario;
 
-        System.out.println("query de bitacora" + queryString);
+ //       System.out.println("query de bitacora" + queryString);
 
         try {
             stQuery = ((RecobrAppUI) mainUI).databaseProvider.getCurrentConnection().createStatement();
@@ -384,15 +390,17 @@ System.out.println("query de resumen grid " + queryString);
             comentarioTxt.focus();
         } else {
             try {
-                queryString = "Insert Into comentario (Comentario)";
-                queryString = queryString + " Values (";
-                queryString = queryString + "'" + (String) comentarioTxt.getValue() + "'";
+                queryString = "Insert Into comentario (Comentario, IdUsuario, FechaYHora)";
+                queryString += " Values (";
+                queryString += "'" + (String) comentarioTxt.getValue() + "'";
+                queryString += "," + String.valueOf(resumenContainer.getContainerProperty(resumenGrid.getSelectedRow(), ID_USUARIO_PROPERTY).getValue());
+                queryString += ",current_timestamp";
                 queryString = queryString + ")";
 
                 stQuery = ((RecobrAppUI) mainUI).databaseProvider.getCurrentConnection().createStatement();
                 stQuery.executeUpdate(queryString);
 
-                Notification.show("Comentario enviado con exito!", Notification.Type.TRAY_NOTIFICATION);
+                Notification.show("Comentario creado exitosamente!", Notification.Type.TRAY_NOTIFICATION);
 
                 comentarioTxt.setValue("");
             } catch (Exception var2) {

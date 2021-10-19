@@ -27,7 +27,7 @@ import java.util.Date;
  */
 public class FiniquitosView extends VerticalLayout implements View {
 
-    static final String CORRELATIVO_PROPERTY = "No";
+    static final String CORRELATIVO_PROPERTY = "Correlativo";
     static final String FECHA_PROPERTY = "Fecha";
     static final String IDENTIFICACION_PROPERTY = "Identificación";
     static final String NOMBRE_PROPERTY = "Nombre";
@@ -132,7 +132,16 @@ public class FiniquitosView extends VerticalLayout implements View {
         finiquitosGrid.setHeightByRows(12);
         finiquitosGrid.setResponsive(true);
 
-        finiquitosGrid.getColumns().forEach(col -> col.setWidthUndefined());
+        finiquitosGrid.getColumn(CORRELATIVO_PROPERTY).setExpandRatio(3);
+        finiquitosGrid.getColumn(FECHA_PROPERTY).setExpandRatio(3);
+        finiquitosGrid.getColumn(IDENTIFICACION_PROPERTY).setExpandRatio(1);
+        finiquitosGrid.getColumn(NOMBRE_PROPERTY).setExpandRatio(2);
+        finiquitosGrid.getColumn(MUNICIPIO_PROPERTY).setExpandRatio(1);
+        finiquitosGrid.getColumn(DEPARTAMENTO_PROPERTY).setExpandRatio(1);
+        finiquitosGrid.getColumn(CUENTA_PROPERTY).setExpandRatio(1);
+        finiquitosGrid.getColumn(TIPO_PROPERTY).setExpandRatio(2);
+
+//        finiquitosGrid.getColumns().forEach(col -> col.setWidthUndefined());
 
         HeaderRow filterRow = finiquitosGrid.appendHeaderRow();
 
@@ -315,8 +324,6 @@ public class FiniquitosView extends VerticalLayout implements View {
         queryString += "     '" + Utileria.getFechaYYYYMMDD_1(inicioDt.getValue()) + "'";
         queryString += " AND '" + Utileria.getFechaYYYYMMDD_1(finDt.getValue()) + "')";
         queryString += " Order by Correlativo";
-
-        System.out.println("QUERY BUSCQUEDA" + queryString);
 
         try {
             stQuery = ((RecobrAppUI) mainUI).databaseProvider.getCurrentConnection().createStatement();

@@ -3,7 +3,10 @@ package com.simpletecno.recobrapp.views.finiquitos;
 
 import com.simpletecno.recobrapp.main.RecobrAppUI;
 import com.simpletecno.recobrapp.utileria.Utileria;
-import com.simpletecno.recobrapp.views.finiquitos.pdf.*;
+import com.simpletecno.recobrapp.views.finiquitos.pdf.CartaExclusionCancelacionOtraInstitucionPDF;
+import com.simpletecno.recobrapp.views.finiquitos.pdf.CartaFaltaExpendientePDF;
+import com.simpletecno.recobrapp.views.finiquitos.pdf.CartaPorHononimoPDF;
+import com.simpletecno.recobrapp.views.finiquitos.pdf.NuevaBaseFiniquitosPDF;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Runo;

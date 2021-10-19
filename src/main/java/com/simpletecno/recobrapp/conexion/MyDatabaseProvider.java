@@ -3,7 +3,6 @@ package com.simpletecno.recobrapp.conexion;
 
 import com.simpletecno.recobrapp.utileria.EnvironmentVars;
 import com.simpletecno.recobrapp.utileria.Utileria;
-import com.vaadin.ui.Notification;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -12,7 +11,7 @@ import javax.sql.DataSource;
 /**
  * Clase para manejar la conectividad a base de datos.
  * Lee variables de ambiente y recursos del archivo context.xml
- * @author jaguirre 
+ * @author jaguirre
  **/
 public class MyDatabaseProvider {
     private Connection currentConnection = null;
@@ -21,87 +20,126 @@ public class MyDatabaseProvider {
     public String DtePath = "";
 
     public MyDatabaseProvider() {
-        this.utileria = new Utileria();
-        this.variablesAmbiente = new EnvironmentVars();
+        utileria = new Utileria();
+        variablesAmbiente = new EnvironmentVars();
     }
 
+    /**
+     * Retorna el objeto Connection, que es una nueva conexion a base de datos.
+     * @return currentConnection Connection.
+     **/
     public Connection getNewConnection() {
         try {
-            this.currentConnection = null;
-            if (this.variablesAmbiente.getDbDataSourceName().equals("MYSQL")) {
-                Class.forName("com.mysql.jdbc.Driver").newInstance();
-            }
 
-            if (this.variablesAmbiente.getDbDataSourceName().equals("MSSQL")) {
+            currentConnection = null;
+
+            if(variablesAmbiente.getDbDataSourceName().equals("MYSQL")) {
+                Class.forName("com.mysql.cj.jdbc.Driver").newInstance();  // desarrollo
+                //Class.forName("com.mysql.jdbc.Driver").newInstance(); //produccion
+            }
+            if(variablesAmbiente.getDbDataSourceName().equals("MSSQL")) {
                 Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver").newInstance();
             }
 
-            System.out.println("1) " + this.variablesAmbiente.getDB_URL());
-            System.out.println("2) " + this.variablesAmbiente.getDB_USERNAME());
-            System.out.println("3) " + this.variablesAmbiente.getDB_PASSWORD());
-            this.currentConnection = DriverManager.getConnection(this.variablesAmbiente.getDB_URL(), this.variablesAmbiente.getDB_USERNAME(), this.variablesAmbiente.getDB_PASSWORD());
-        } catch (Exception var2) {
-            Notification.show("Error al obtener conexion  " + var2);
-            this.utileria.escribirLog("N/A", "", "\n\nConnectionBD->getConnection()..Error....: " + var2.getMessage());
-            var2.printStackTrace();
-        }
+            currentConnection = DriverManager.getConnection(
+                    (String)variablesAmbiente.getDB_URL(),
+                    (String)variablesAmbiente.getDB_USERNAME(),
+                    (String)variablesAmbiente.getDB_PASSWORD());
 
-        return this.currentConnection;
+/***
+ DataSource ds = getDBDataSource();
+
+ if (ds == null) {
+ utileria.escribirLog("N/A", "", "\n\nConnectionBD->getConnection()...error al obtener el datasource.....\n\n");
+ return null;
+ }
+
+ currentConnection = ds.getConnection();
+
+ if (currentConnection == null){
+ utileria.escribirLog("N/A", "", "\n\nConnectionBD->getConnection()...error al obtener el datasource.....\n\n");
+ }
+ ***/
+
+        } catch (Exception ex) {
+            utileria.escribirLog("N/A", "", "\n\nConnectionBD->getConnection()..Error..: " + ex.getMessage());
+            ex.printStackTrace();
+        }
+        return currentConnection;
     }
 
+    /**
+     * Lee la variable de ambiente DBDATASOURCE contenida en el archivo web.xml,
+     * para determinar que manejador de base de datos se usarara.
+     * Luego lee el contexto su-resources.xml para extraer el recurso MYSQLDS o MSSQLDS, segun sea para MYSQL o para MS SQL SERVER
+     * @return DataSource ds
+     **/
     private DataSource getDBDataSource() {
         DataSource ds = null;
 
         try {
-            if (this.variablesAmbiente.getDbDataSourceName().equals("MYSQL")) {
-                Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
-                ds = (DataSource)this.variablesAmbiente.getCurrentContext().lookup("java:comp/env/MYSQLDS");
+
+            if(variablesAmbiente.getDbDataSourceName().equals("MYSQL"))  {  // MySQL
+                //Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
+                Class.forName("com.mysql.jdbc.Driver").newInstance();
+                ds = (DataSource) variablesAmbiente.getCurrentContext().lookup("java:comp/env/MYSQLDS");
             }
 
-            if (this.variablesAmbiente.getDbDataSourceName().equals("MSSQL")) {
+            if(variablesAmbiente.getDbDataSourceName().equals("MSSQL")) {   // Microsoft SQLSERVER
                 Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver").newInstance();
-                ds = (DataSource)this.variablesAmbiente.getCurrentContext().lookup("java:comp/env/MSSQLDS");
+                ds = (DataSource) variablesAmbiente.getCurrentContext().lookup("java:comp/env/MSSQLDS");
+            }
+            if(variablesAmbiente.getDbDataSourceName().equals("ORACLE")) {  // ORACLE
+                Class.forName ("oracle.jdbc.driver.OracleDriver").newInstance();
+                ds = (DataSource) variablesAmbiente.getCurrentContext().lookup("java:comp/env/ORACLEDS");
+            }
+            if(variablesAmbiente.getDbDataSourceName().equals("SQLITE")) {  // ORACLE
+                Class.forName ("org.sqlite.JDBC").newInstance();
+                ds = (DataSource) variablesAmbiente.getCurrentContext().lookup("java:comp/env/SQLITEDS");
             }
 
-            if (this.variablesAmbiente.getDbDataSourceName().equals("ORACLE")) {
-                Class.forName("oracle.jdbc.driver.OracleDriver").newInstance();
-                ds = (DataSource)this.variablesAmbiente.getCurrentContext().lookup("java:comp/env/ORACLEDS");
-            }
-
-            if (this.variablesAmbiente.getDbDataSourceName().equals("SQLITE")) {
-                Class.forName("org.sqlite.JDBC").newInstance();
-                ds = (DataSource)this.variablesAmbiente.getCurrentContext().lookup("java:comp/env/SQLITEDS");
-            }
-        } catch (Exception var3) {
-            this.utileria.escribirLog("N/A", "", "\n\nConnectionBD->getDBDataSource()...Error, no se pudo instanciar la clase..: " + var3.getMessage());
+        }
+        catch(Exception cnfE) {
+            utileria.escribirLog("N/A", "", "\n\nConnectionBD->getDBDataSource()...Error, no se pudo instanciar la clase..: " + cnfE.getMessage());
         }
 
         return ds;
     }
 
+    /**
+     * Lee la variable de ambiente DBDATASOURCE contenida en el archivo web.xml,
+     * para determinar que manejador de base de datos se usarara.
+     * @return String DBDATASOURCE
+     */
     public String getUsedDBDataSource() {
         String usedDataSource = null;
 
         try {
-            if (this.variablesAmbiente.getDbDataSourceName().equals("MYSQL")) {
+
+            if(variablesAmbiente.getDbDataSourceName().equals("MYSQL")) { // MySQL
                 usedDataSource = "MYSQL";
             }
 
-            if (this.variablesAmbiente.getDbDataSourceName().equals("MSSQL")) {
+            if(variablesAmbiente.getDbDataSourceName().equals("MSSQL")) { // Microsoft SQLSERVER
                 usedDataSource = "MSSQL";
             }
 
-            if (this.variablesAmbiente.getDbDataSourceName().equals("ORACLE")) {
+            if(variablesAmbiente.getDbDataSourceName().equals("ORACLE")) { // ORACLE
                 usedDataSource = "ORACLE";
             }
-        } catch (Exception var3) {
-            this.utileria.escribirLog("N/A", "", "\n\nConnectionBD->getUsedDBDataSource()...Error, no se pudo instanciar la clase..: " + var3.getMessage());
+        }
+        catch(Exception cnfE) {
+            utileria.escribirLog("N/A", "", "\n\nConnectionBD->getUsedDBDataSource()...Error, no se pudo instanciar la clase..: " + cnfE.getMessage());
         }
 
         return usedDataSource;
     }
 
+    /**
+     * Retorna la coneccion actual de base de datos.
+     * @return the currentConnection
+     **/
     public Connection getCurrentConnection() {
-        return this.currentConnection;
+        return currentConnection;
     }
 }

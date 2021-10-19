@@ -21,7 +21,9 @@ import com.vaadin.ui.renderers.ButtonRenderer;
 import com.vaadin.ui.renderers.ClickableRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -33,7 +35,7 @@ import java.util.Date;
  */
 public class ConsultarFiniquitosView extends VerticalLayout implements View {
 
-    public static final String CORRELATIVO_PROPERTY = "No";
+    public static final String CORRELATIVO_PROPERTY = "Correlativo";
     public static final String FECHA_PROPERTY = "Fecha";
     public static final String IDENTIFICACION_PROPERTY = "Identificación";
     public static final String NOMBRE_PROPERTY = "Nombre";
@@ -162,7 +164,7 @@ public class ConsultarFiniquitosView extends VerticalLayout implements View {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 llenarGridFiniquitos();
-                ingresarBitacora();
+//                ingresarBitacora();
             }
         });
 
@@ -197,12 +199,9 @@ public class ConsultarFiniquitosView extends VerticalLayout implements View {
         finiquitosGrid.getColumns().forEach(col -> col.setWidthUndefined());
         finiquitosGrid.getColumn(IMAGEN_PROPERTY).setRenderer(new ButtonRenderer(e
                 -> {
-
             if (finiquitosContainer.getContainerProperty(e.getItemId(), IMAGEN_PROPERTY).getValue().equals("Visualizar")) {
                 actualizarArchivo(e);
-                System.out.println("Esta aqui en visualizar");
             }else{
-                System.out.println("Esta aqui en sin archivo");
                 String  correlativo = String.valueOf(finiquitosContainer.getContainerProperty(e.getItemId(), CORRELATIVO_PROPERTY).getValue());
                 String  fechaDoc = String.valueOf(finiquitosContainer.getContainerProperty(e.getItemId(), FECHA_PROPERTY).getValue());
                 String  tipoDoc = String.valueOf(finiquitosContainer.getContainerProperty(e.getItemId(), TIPO_PROPERTY).getValue());
@@ -215,6 +214,18 @@ public class ConsultarFiniquitosView extends VerticalLayout implements View {
                 cargarArchivo.center();
             }
         }));
+
+        finiquitosGrid.getColumn(CORRELATIVO_PROPERTY).setExpandRatio(3);
+        finiquitosGrid.getColumn(FECHA_PROPERTY).setExpandRatio(3);
+        finiquitosGrid.getColumn(IDENTIFICACION_PROPERTY).setExpandRatio(1);
+        finiquitosGrid.getColumn(NOMBRE_PROPERTY).setExpandRatio(2);
+        finiquitosGrid.getColumn(MUNICIPIO_PROPERTY).setExpandRatio(1);
+        finiquitosGrid.getColumn(DEPARTAMENTO_PROPERTY).setExpandRatio(1);
+        finiquitosGrid.getColumn(CUENTA_PROPERTY).setExpandRatio(1);
+        finiquitosGrid.getColumn(TIPO_PROPERTY).setExpandRatio(2);
+        finiquitosGrid.getColumn(IMAGEN_PROPERTY).setExpandRatio(1);
+        finiquitosGrid.getColumn(ARCHIVO_PROPERTY).setExpandRatio(1);
+        finiquitosGrid.getColumn(ARCHIVO_TIPO_PROPERTY).setExpandRatio(1);;
 
         finiquitosGrid.getColumn(ARCHIVO_PROPERTY).setHidden(true);
         finiquitosGrid.getColumn(ARCHIVO_TIPO_PROPERTY).setHidden(true);
@@ -327,8 +338,6 @@ public class ConsultarFiniquitosView extends VerticalLayout implements View {
         }
         queryString += " Order by Correlativo";
 
-        System.out.println("Busqueda de finiquito " + queryString);
-
         try {
             stQuery = ((RecobrAppUI) mainUI).databaseProvider.getCurrentConnection().createStatement();
             rsRecords = stQuery.executeQuery(queryString);
@@ -362,7 +371,6 @@ public class ConsultarFiniquitosView extends VerticalLayout implements View {
             System.out.println("Error al listar tabla de Finiquitos : " + ex);
             ex.printStackTrace();
         }
-
     }
 
     public boolean exportToExcel() {

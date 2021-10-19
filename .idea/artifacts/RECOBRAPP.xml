@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="war" name="RECOBRAPP">
-    <output-path>$PROJECT_DIR$/out/artifacts/RECOBRAPP</output-path>
-    <root id="archive" name="RECOBRAPP.war">
-      <element id="artifact" artifact-name="RECOBRAPP:war exploded" />
-    </root>
-  </artifact>
-</component>

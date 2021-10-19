@@ -10,26 +10,16 @@ import com.vaadin.event.ShortcutAction;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Page;
 import com.vaadin.shared.ui.MarginInfo;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.PasswordField;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
+import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Runo;
 import com.vaadin.ui.themes.ValoTheme;
+import org.vaadin.ui.NumberField;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.vaadin.ui.NumberField;
 
 /**
  *
@@ -117,11 +107,8 @@ public class UserForm extends Window {
         perfilCbx.setInvalidAllowed(false);
         perfilCbx.addItem("ADMINISTRADOR");
         perfilCbx.addItem("SUPERVISOR");
-        perfilCbx.addItem("FINANCIERO");
-        perfilCbx.addItem("CONTADOR");
-        perfilCbx.addItem("AUXILIAR");
-        perfilCbx.addItem("PROVEEDOR");
-        perfilCbx.select("SUPERVISOR");
+        perfilCbx.addItem("GESTOR");
+        perfilCbx.select("GESTOR");
 
         equipoTxt = new TextField("Equipo :");
         equipoTxt.setWidth("8em");
@@ -186,8 +173,8 @@ public class UserForm extends Window {
         userForm.addComponent(emailTxt);
         userForm.addComponent(perfilCbx);
         userForm.addComponent(equipoTxt);
-        userForm.addComponent(estatusCbx);
         userForm.addComponent(metaDiariaTxt);
+        userForm.addComponent(estatusCbx);
         userForm.addComponent(buttonsLayout);
         userForm.setComponentAlignment(buttonsLayout, Alignment.BOTTOM_CENTER);
         
