@@ -5,6 +5,7 @@ import com.simpletecno.recobrapp.conexion.MyDatabaseProvider;
 import com.simpletecno.recobrapp.conexion.SessionInformation;
 import com.simpletecno.recobrapp.utileria.MyEmailMessanger;
 import com.simpletecno.recobrapp.utileria.MySessionInitListener;
+import com.simpletecno.recobrapp.views.contactos.ConsultarContactosView;
 import com.simpletecno.recobrapp.views.error.ErrorView;
 import com.simpletecno.recobrapp.views.finiquitos.ConsultarFiniquitosView;
 import com.simpletecno.recobrapp.views.finiquitos.FiniquitosView;
@@ -311,6 +312,7 @@ public class RecobrAppUI extends UI implements Button.ClickListener {
         getNavigator().addView("finiquitosImportar", ImportarView.class);
         getNavigator().addView("finiquitosConsultar", ConsultarFiniquitosView.class);
         getNavigator().addView("finiquitos", FiniquitosView.class);
+        getNavigator().addView("contactosConsultar", ConsultarContactosView.class);
         getNavigator().addView("recuperaReportar", ReportoMetaView.class);
         getNavigator().addView("recuperaResumen", ResumenReportoMetaView.class);
         getNavigator().addView("bitacora", BitacoraView.class);
@@ -385,6 +387,9 @@ public class RecobrAppUI extends UI implements Button.ClickListener {
 
         menuItems.put("finiquitos", "Mantenimiento Finiquitos");
         iconItems.put("finiquitos", FontAwesome.PLUS);
+
+        menuItems.put("contactosConsultar", "Consultar Contactos");
+        iconItems.put("contactosConsultar", FontAwesome.SEARCH);
 
         menuItems.put("recuperaReportar", "Reportar Recuperación");
         iconItems.put("recuperaReportar", FontAwesome.CHECK);
@@ -485,6 +490,14 @@ System.out.println(item.getKey());
                 menuItemsLayout.addComponent(label);
             }
 
+            if (item.getKey().equals("contactosConsultar")) {
+                label = new Label("Contactos", ContentMode.HTML);
+                label.setPrimaryStyleName(ValoTheme.MENU_SUBTITLE);
+                label.addStyleName(ValoTheme.LABEL_H4);
+                label.setSizeUndefined();
+                menuItemsLayout.addComponent(label);
+            }
+
             if (item.getKey().equals("recuperaReportar")) {
                 label = new Label("Reporto", ContentMode.HTML);
                 label.setPrimaryStyleName(ValoTheme.MENU_SUBTITLE);
@@ -537,6 +550,7 @@ System.out.println(item.getKey());
 
         if (sessionInformation.getStrUserProfileName().equals("GESTOR")) {
             return (acceso.equals("Consultar Finiquitos")
+                    || acceso.equals("Consultar Contactos")
                     || acceso.equals("Mantenimiento Finiquitos"));
         }
 
