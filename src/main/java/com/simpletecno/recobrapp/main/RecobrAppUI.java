@@ -545,7 +545,8 @@ System.out.println(item.getKey());
             return (acceso.equals("Consultar Finiquitos")
                     || acceso.equals("Mantenimiento Finiquitos")
                     || acceso.equals("Reportar Recuperación")
-                    || acceso.equals("Resumen de Recuperación"));
+                    || acceso.equals("Resumen de Recuperación")
+                    || acceso.equals("Consultar Contactos"));
         }
 
         if (sessionInformation.getStrUserProfileName().equals("GESTOR")) {

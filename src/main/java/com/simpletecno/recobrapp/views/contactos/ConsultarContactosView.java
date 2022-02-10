@@ -60,6 +60,7 @@ public class ConsultarContactosView extends VerticalLayout implements View {
     ResultSet rsRecords;
 
     String queryString;
+    TextField nombreTxt;
 
     public ConsultarContactosView() {
 
@@ -118,7 +119,7 @@ public class ConsultarContactosView extends VerticalLayout implements View {
         filtrosLayout.setSpacing(true);
         filtrosLayout.setMargin(false);
 
-        TextField nombreTxt = new TextField("NOMBRE:");
+        nombreTxt = new TextField("NOMBRE O DPI:");
         nombreTxt.setWidth("300px");
 
         Button consultarBtn;
@@ -211,8 +212,8 @@ public class ConsultarContactosView extends VerticalLayout implements View {
         queryString = "Select *";
         queryString += " From contacto";
         if (!nombre.trim().isEmpty()) {
-            String documentoSerie[] = nombre.split(" ");
             queryString += " WHERE Nombre Like '%" + nombre + "%'";
+            queryString += " OR cui LIKE '%" + nombreTxt.getValue() + "%'";        
             queryString += " Order by Nombre";
         }
         else {
